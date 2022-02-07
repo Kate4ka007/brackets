@@ -1,43 +1,23 @@
 module.exports = function check(str, bracketsConfig) {
-  
-  const openBrackets = ['(', '[', '{', '<' ]
-
-  const pairs = {
-    [')']: '(',
-    [']']: '[',
-    ['}']: '{',
-    ['>']: '<'
-  };
-
+  let bracketsToString = bracketsConfig.join('').replace(/,/g, '');
+ 
   let stack = [];
- newStr = str.split('|').join("")
 
-  for(let i = 0; i < newStr.length; i++) {
+  for (let bracket of str) {
+    let bracketsIndex = bracketsToString.indexOf(bracket)
 
-
-    let current = newStr[i];
-
-
-    if(openBrackets.includes(current)) {
-      stack.push(current);
-    } else {
-      if(stack.length === 0) {
-        return false
-      }
-
-      let topEl = stack[stack.length - 1];
-
-      if (pairs[current] === topEl) {
-        stack.pop()
+    if (bracketsIndex % 2 === 0) {
+      if (bracket === bracketsToString[bracketsIndex + 1] && stack[stack.length - 1] === bracketsIndex) {
+        stack.pop();
       } else {
+        stack.push(bracketsIndex);
+      }
+    } else {
+        if (stack.pop() !== bracketsIndex - 1) {
         return false;
       }
     }
+
   }
-if ((str.length - newStr.length) % 2 !== 0) {
-  return false;
-}
-
-return stack.length === 0;
-
+  return stack.length === 0;
 }
